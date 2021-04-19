@@ -2,7 +2,46 @@
 from enum import Enum
 
 class PieceTable:
-    pass
+
+    def __init__(self, original=''): 
+        self.__original = original
+        self.__added = '' 
+        self.__pieces = [] 
+
+    @classmethod
+    def fromfile(cls, filename):
+        self = cls()
+        with open(filename, "r") as f:
+            lines = f.readlines()
+            result = []
+            start = 0
+            line_starts = [] 
+            for line in lines:
+                result.append(line)
+                line_starts.append(start)
+                start += len(line)
+
+            self.__original = ''.join(result)
+
+            piece = Piece(start=0,
+                          length=len(self.__original),
+                          line_starts=line_starts)
+
+            self.__pieces.append(piece)        
+
+        return self
+
+    @property
+    def original(self):
+        return self.__original
+
+    @property
+    def added(self):
+        return self.__added
+
+    @property
+    def pieces(self):
+        return self.__pieces
 
 class PieceType(Enum):
     ORIGINAL = 0 
