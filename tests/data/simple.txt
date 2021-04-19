@@ -1,0 +1,7 @@
+This is a simple test file for the gold text editor.
+
+Some newlines.
+
+Here we test the simple things. Piece tables and ropes and such.
+
+Talk soon.
