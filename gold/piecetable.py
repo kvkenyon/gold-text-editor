@@ -3,14 +3,64 @@ from enum import Enum
 
 class PieceTable:
 
-    def __init__(self, original=''): 
+    def __init__(self, original='', pieces=[]): 
         self.__original = original
         self.__added = '' 
-        self.__pieces = [] 
+        self.__pieces = pieces 
+
+    def insert(self, offset, text):
+        piece, piece_offset = self.get_piece_from_offset(offset)
+        piece_index = self.pieces.index(piece)
+        if piece_offset == 1:
+            # append at front
+            pass
+        elif piece_offset == piece.length:
+            # append at end
+            pass
+        else:
+            # middle
+            self.__added += text
+            left = Piece(piece_type=piece.piece_type,
+                         start=piece.start,
+                         length=piece_offset)
+            middle = Piece(PieceType.ADDED, start=0,
+                            length=len(text))
+            right = Piece(start=piece_offset,
+                          length=piece.length - piece_offset)
+            self.__pieces.remove(piece)
+            self.__pieces.insert(piece_index, left)
+            self.__pieces.insert(piece_index + 1, middle)
+            self.__pieces.insert(piece_index + 2, right)
+    
+    def get_contents(self):
+        contents = []
+        for piece in self.pieces:
+            start = piece.start
+            end = start + piece.length
+            if piece.piece_type == PieceType.ORIGINAL:
+                contents.append(self.original[start:end])
+            else:
+                contents.append(self.added[start:end]) 
+        return ''.join(contents)
+
+    def get_piece_from_offset(self, offset):
+        'Find the piece that contains the offset.'
+        curr_offset = 0 
+        curr_piece = None
+        piece_offset = -1
+        for piece in self.pieces:
+            if curr_offset + piece.length >= offset:
+                curr_piece = piece
+                piece_offset = offset - curr_offset
+                break
+            else:
+                curr_offset += piece.length
+                
+        return curr_piece, piece_offset
 
     @classmethod
     def fromfile(cls, filename):
-        self = cls()
+        self = None
         with open(filename, "r") as f:
             lines = f.readlines()
             result = []
@@ -21,13 +71,14 @@ class PieceTable:
                 line_starts.append(start)
                 start += len(line)
 
-            self.__original = ''.join(result)
+            original = ''.join(result)
 
             piece = Piece(start=0,
-                          length=len(self.__original),
+                          length=len(original),
                           line_starts=line_starts)
 
-            self.__pieces.append(piece)        
+            pieces = [piece] 
+            self = cls(original, pieces)
 
         return self
 
@@ -77,3 +128,6 @@ class Piece:
     @property
     def piece_type(self):
         return self.__piece_type
+
+    def __repr__(self):
+        return f'Piece(start={self.__start}, length={self.__length}, line_starts={self.__line_starts})'
