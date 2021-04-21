@@ -63,12 +63,41 @@ def test_insert_middle(input_file_simple):
     assert pt.pieces[2].piece_type == PieceType.ORIGINAL
 
 def test_get_contents_after_insert(input_file_simple):
+    print("HELLO")
     pt = PieceTable.fromfile(input_file_simple)
     assert len(pt.pieces) == 1
     pt.insert(20, "went to the park and\n")
     exp = 'the quick brown fox\nwent to the park and\njumped over the lazy dog'
     assert pt.get_contents() == exp
 
+def test_get_contents_after_insert2(input_file_simple):
+    pt = PieceTable.fromfile(input_file_simple)
+    assert len(pt.pieces) == 1
+    pt.insert(1,'a')
+    exp = 'tahe quick brown fox\njumped over the lazy dog'
+    assert pt.get_contents() == exp
+    print(pt.pieces)
+    assert len(pt.pieces) == 3 
+
+def test_get_contents_after_insert3(input_file_simple):
+    pt = PieceTable.fromfile(input_file_simple)
+    assert len(pt.pieces) == 1
+    pt.insert(1, 'a')
+    pt.insert(1, 'a')
+    print(pt.pieces)
+    exp = 'taahe quick brown fox\njumped over the lazy dog'
+    assert pt.get_contents() == exp
+    assert len(pt.pieces) == 4 
+
+def test_get_contents_after_insert4(input_file_simple):
+    pt = PieceTable.fromfile(input_file_simple)
+    assert len(pt.pieces) == 1
+    pt.insert(0, 'unseriousnessbywayofhowtosandhacks\n') 
+    print(pt.pieces)
+    exp = 'unseriousnessbywayofhowtosandhacks\nthe quick brown fox\njumped over the lazy dog'
+    assert pt.get_contents() == exp
+    assert len(pt.pieces) == 2 
+    
 # Piece Tests
 def test_construct_piece():
     piece = Piece(piece_type=PieceType.ORIGINAL,
@@ -82,7 +111,7 @@ def test_construct_piece():
 
 def test_piece_repr():
     p = Piece(start=0, length=44, line_starts=[0,20])
-    assert p.__repr__() == 'Piece(start=0, length=44, line_starts=[0, 20])'
+    assert p.__repr__() == 'Piece(start=0, length=44, line_starts=[0, 20], piece_type=original)'
 
 def test_piecetypes():
     original = PieceType.ORIGINAL

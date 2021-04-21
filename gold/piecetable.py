@@ -1,4 +1,5 @@
 # piecetable.py
+
 from enum import Enum
 
 class PieceTable:
@@ -11,12 +12,18 @@ class PieceTable:
     def insert(self, offset, text):
         piece, piece_offset = self.get_piece_from_offset(offset)
         piece_index = self.pieces.index(piece)
-        if piece_offset == 1:
+        if piece_offset == 0:
             # append at front
-            pass
+            self.__added += text 
+            self.__pieces.insert(piece_index,
+                                 Piece(PieceType.ADDED,
+                                       length=len(text)))
         elif piece_offset == piece.length:
             # append at end
-            pass
+            self.__added += text 
+            self.__pieces.insert(piece_index + 1,
+                                 Piece(PieceType.ADDED,
+                                       length=len(text)))
         else:
             # middle
             self.__added += text
@@ -32,6 +39,7 @@ class PieceTable:
             self.__pieces.insert(piece_index + 1, middle)
             self.__pieces.insert(piece_index + 2, right)
     
+
     def get_contents(self):
         contents = []
         for piece in self.pieces:
@@ -95,8 +103,8 @@ class PieceTable:
         return self.__pieces
 
 class PieceType(Enum):
-    ORIGINAL = 0 
-    ADDED = 1 
+    ORIGINAL = 'original' 
+    ADDED = 'added' 
 
 class Piece:
     __slots__ = ('__piece_type',
@@ -130,4 +138,4 @@ class Piece:
         return self.__piece_type
 
     def __repr__(self):
-        return f'Piece(start={self.__start}, length={self.__length}, line_starts={self.__line_starts})'
+        return f'Piece(start={self.__start}, length={self.__length}, line_starts={self.__line_starts}, piece_type={self.__piece_type.value})'
