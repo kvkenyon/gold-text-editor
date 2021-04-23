@@ -48,7 +48,6 @@ def test_get_piece_from_offset():
     
 def test_insert_middle(input_file_simple):
     pt = PieceTable.fromfile(input_file_simple)
-    print(pt.original)
     assert len(pt.pieces) == 1
     pt.insert(20, "went to the park and\n")
     assert len(pt.pieces) == 3
@@ -63,7 +62,6 @@ def test_insert_middle(input_file_simple):
     assert pt.pieces[2].piece_type == PieceType.ORIGINAL
 
 def test_get_contents_after_insert(input_file_simple):
-    print("HELLO")
     pt = PieceTable.fromfile(input_file_simple)
     assert len(pt.pieces) == 1
     pt.insert(20, "went to the park and\n")
@@ -93,11 +91,33 @@ def test_get_contents_after_insert4(input_file_simple):
     pt = PieceTable.fromfile(input_file_simple)
     assert len(pt.pieces) == 1
     pt.insert(0, 'unseriousnessbywayofhowtosandhacks\n') 
-    print(pt.pieces)
     exp = 'unseriousnessbywayofhowtosandhacks\nthe quick brown fox\njumped over the lazy dog'
     assert pt.get_contents() == exp
     assert len(pt.pieces) == 2 
-    
+
+
+def test_get_contents_after_insert5(input_file_simple):
+    pt = PieceTable.fromfile(input_file_simple)
+    assert len(pt.pieces) == 1
+    pt.insert(44, '\n\n thats the end')
+    exp = 'the quick brown fox\njumped over the lazy dog\n\n thats the end'
+    assert pt.get_contents() == exp
+    pt.insert(47, "asdf ")
+    exp = 'the quick brown fox\njumped over the lazy dog\n\n asdf thats the end'
+    assert pt.get_contents() == exp
+    pt.insert(5, 'qqq')
+    exp = 'the qqqquick brown fox\njumped over the lazy dog\n\n asdf thats the end'
+    assert pt.get_contents() == exp
+
+
+# def test_delete(input_file_simple):
+#     pt = PieceTable.fromfile(input_file_simple)
+#     pt.delete(1,5)
+#     exp = 'quick brown fox\njumped over the lazy dog'
+#     assert pt.get_contents() == exp
+#     assert len(pt.pieces) == 1 
+
+
 # Piece Tests
 def test_construct_piece():
     piece = Piece(piece_type=PieceType.ORIGINAL,

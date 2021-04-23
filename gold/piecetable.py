@@ -14,30 +14,32 @@ class PieceTable:
         piece_index = self.pieces.index(piece)
         if piece_offset == 0:
             # append at front
-            self.__added += text 
             self.__pieces.insert(piece_index,
                                  Piece(PieceType.ADDED,
+                                       start=len(self.added),
                                        length=len(text)))
         elif piece_offset == piece.length:
             # append at end
-            self.__added += text 
             self.__pieces.insert(piece_index + 1,
                                  Piece(PieceType.ADDED,
+                                       start=len(self.added),
                                        length=len(text)))
         else:
             # middle
-            self.__added += text
+
             left = Piece(piece_type=piece.piece_type,
                          start=piece.start,
                          length=piece_offset)
-            middle = Piece(PieceType.ADDED, start=0,
+            middle = Piece(PieceType.ADDED, start=len(self.added),
                             length=len(text))
-            right = Piece(start=piece_offset,
+            right = Piece(piece_type=piece.piece_type,
+                          start=piece_offset,
                           length=piece.length - piece_offset)
             self.__pieces.remove(piece)
             self.__pieces.insert(piece_index, left)
             self.__pieces.insert(piece_index + 1, middle)
             self.__pieces.insert(piece_index + 2, right)
+        self.__added += text
     
 
     def get_contents(self):
