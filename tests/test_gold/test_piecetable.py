@@ -108,7 +108,11 @@ def test_get_contents_after_insert5(input_file_simple):
     pt.insert(5, 'qqq')
     exp = 'the qqqquick brown fox\njumped over the lazy dog\n\n asdf thats the end'
     assert pt.get_contents() == exp
-
+    print(pt.pieces)
+    pt.insert(53, " dang ")
+    print(pt.pieces)
+    exp = 'the qqqquick brown fox\njumped over the lazy dog\n\n asd dang f thats the end'
+    assert pt.get_contents() == exp
 
 # def test_delete(input_file_simple):
 #     pt = PieceTable.fromfile(input_file_simple)

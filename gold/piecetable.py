@@ -33,7 +33,7 @@ class PieceTable:
             middle = Piece(PieceType.ADDED, start=len(self.added),
                             length=len(text))
             right = Piece(piece_type=piece.piece_type,
-                          start=piece_offset,
+                          start=piece.start + piece_offset,
                           length=piece.length - piece_offset)
             self.__pieces.remove(piece)
             self.__pieces.insert(piece_index, left)
